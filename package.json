@@ -1,0 +1,25 @@
+{
+  "name": "redux-demo",
+  "version": "1.0.0",
+  "description": "Polymer and Firebase project",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://DaveAldon@github.com/DaveAldon/Redux-Demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DaveAldon/Redux-Demo/issues"
+  },
+  "homepage": "https://github.com/DaveAldon/Redux-Demo#readme",
+  "dependencies": {
+    "redux": "^3.7.2"
+  }
+}

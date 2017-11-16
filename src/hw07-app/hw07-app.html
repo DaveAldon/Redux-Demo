@@ -1,0 +1,153 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-right-animation.html">
+<link rel="import" href="../../src/hw07-app/redux-mixin.html">
+
+<dom-module id="hw07-app">
+  <template is="dom-bind">
+  <style include="iron-flex iron-flex-alignment">
+    iron-list {
+      width: 100%;
+      height: 50%;
+    }
+    paper-card {
+      width: 100%;
+      background-color: lightblue;
+    }
+    paper-card:hover {
+      @apply(--shadow-elevation-16dp);
+    }
+    .card-content {
+      margin-top: -10px;
+      margin-left: 10px;
+    }
+    #card-holder {
+      padding: 5px;
+    }
+    #addfriendbtn {
+      width: 59.3%;
+    }
+    #delitembtn {
+      background-color: salmon;
+      height: 63%;
+      right: -5px;
+      position: absolute;
+    }
+    #cardinfo {
+      background-color: lightgreen;
+    }
+  </style>
+
+  <firebase-app id="myFireApp" auth-domain="json-homework-4.firebaseapp.com"
+    database-url="https://json-homework-4.firebaseio.com"
+    api-key="AIzaSyBpUYA2lX51fEKjHqkKIajJVVAY5cUIcOg"
+    messaging-sender-id="365368634575">
+  </firebase-app>
+  <firebase-query path="/users" data="{{qryData}}"></firebase-query>
+
+  <paper-dialog id="newFriend" entry-animation="slide-from-left-animation" exit-animation="slide-right-animation" modal on-iron-overlay-closed="diaClosed">
+    <div class="buttons">
+      <div class="layout vertical">
+        <paper-input id="inName" label="Name"></paper-input>
+        <paper-input auto-validate allowed-pattern="[0-9]" id="inPhone" label="Phone Number"></paper-input>
+        <paper-input auto-validate allowed-pattern="[0-9]" id="inAge" label="Age"></paper-input>
+      </div>
+      <paper-button dialog-confirm>Add</paper-button>
+      <paper-button dialog-dismiss>Cancel</paper-button>
+    </div>
+  </paper-dialog>
+
+  <iron-list items="[[qryData]]" selected-items="{{selectedItems}}" selection-enabled as="ord">
+    <template>
+     <div id="card-holder">
+
+
+
+       <paper-card>
+
+         <div id="cardinfo" class="layout horizontal" class$="[[_computedClass(selected, ord)]]">
+           <div class="layout vertical">
+             <div tabindex$="[[tabIndex]]" aria-label$="Select/Deselect [[ord.name]]">
+               <div class="pad">
+                 <div class="primary">
+                   <h3>[[ord.name]]</h3>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </paper-card>
+
+     </div>
+    </template>
+  </iron-list>
+
+</template>
+<script>
+    /**
+     * @customElement
+     * @polymer
+     */
+
+    class Hw07App extends ReduxMixin(Polymer.Element) {
+      static get is() { return 'hw07-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'hw07-app'
+          }
+        };
+      }
+
+      _computedClass(isSelected, item) {
+        console.log(isSelected);
+        console.log(item);
+        var classes = 'item';
+        if (isSelected) {
+          classes += ' selected';
+          this.dispatch({type: "name", payload: item.name});
+          this.dispatch({type: "age", payload: item.age});
+          this.dispatch({type: "phone", payload: item.phone});
+        }
+        return classes;
+      }
+
+      addOne(value) {
+        this.dispatch({type: value});
+      }
+
+      _unselect(e) {
+        this.$.itemsList.deselectItem(e.model.item);
+        console.log("unselected");
+      }
+
+      ready() {
+        super.ready();
+      }
+      diaClosed() {
+        if (this.$.newFriend.closingReason.confirmed) {
+          var dbRef = this.$.myFireApp.app.database();
+          dbRef.ref('/users').push().set({
+            name: this.$.inName.value,
+            phone: this.$.inPhone.value,
+            age : this.$.inAge.value
+          });
+        }
+      }
+    }
+    window.customElements.define(Hw07App.is, Hw07App);
+  </script>
+</dom-module>
