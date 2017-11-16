@@ -24,7 +24,6 @@
     }
     paper-card {
       width: 100%;
-      background-color: lightblue;
     }
     paper-card:hover {
       @apply(--shadow-elevation-16dp);
@@ -45,8 +44,14 @@
       right: -5px;
       position: absolute;
     }
-    #cardinfo {
+    #selectName {
+      text-align: center;
+    }
+    .item {
       background-color: lightgreen;
+    }
+    .selected {
+      background-color: lightyellow;
     }
   </style>
 
@@ -72,40 +77,24 @@
   <iron-list items="[[qryData]]" selected-items="{{selectedItems}}" selection-enabled as="ord">
     <template>
      <div id="card-holder">
-
-
-
        <paper-card>
-
-         <div id="cardinfo" class="layout horizontal" class$="[[_computedClass(selected, ord)]]">
-           <div class="layout vertical">
-             <div tabindex$="[[tabIndex]]" aria-label$="Select/Deselect [[ord.name]]">
-               <div class="pad">
-                 <div class="primary">
-                   <h3>[[ord.name]]</h3>
-                 </div>
-               </div>
-             </div>
+         <div id="cardinfo" class="layout horizontal" class$="[[_computedClass(selected, ord, show)]]">
+           <div id="selectName" class="layout vertical">
+             <h3>[[ord.name]]</h3>
            </div>
          </div>
        </paper-card>
-
      </div>
     </template>
   </iron-list>
 
 </template>
 <script>
-    /**
-     * @customElement
-     * @polymer
-     */
-
     class Hw07App extends ReduxMixin(Polymer.Element) {
       static get is() { return 'hw07-app'; }
       static get properties() {
         return {
-          prop1: {
+          type: {
             type: String,
             value: 'hw07-app'
           }
@@ -113,39 +102,18 @@
       }
 
       _computedClass(isSelected, item) {
-        console.log(isSelected);
-        console.log(item);
         var classes = 'item';
         if (isSelected) {
           classes += ' selected';
           this.dispatch({type: "name", payload: item.name});
           this.dispatch({type: "age", payload: item.age});
           this.dispatch({type: "phone", payload: item.phone});
+          this.dispatch({type: "show", payload: "true"});
+        }
+        else {
+          this.dispatch({type: "show", payload: "false"});
         }
         return classes;
-      }
-
-      addOne(value) {
-        this.dispatch({type: value});
-      }
-
-      _unselect(e) {
-        this.$.itemsList.deselectItem(e.model.item);
-        console.log("unselected");
-      }
-
-      ready() {
-        super.ready();
-      }
-      diaClosed() {
-        if (this.$.newFriend.closingReason.confirmed) {
-          var dbRef = this.$.myFireApp.app.database();
-          dbRef.ref('/users').push().set({
-            name: this.$.inName.value,
-            phone: this.$.inPhone.value,
-            age : this.$.inAge.value
-          });
-        }
       }
     }
     window.customElements.define(Hw07App.is, Hw07App);

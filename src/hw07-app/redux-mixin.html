@@ -3,7 +3,7 @@
 <script src="../../node_modules/redux/dist/redux.js"></script>
 
 <script>
-  const initialState = { age : 0, phone : 0};
+  const initialState = { show : "false", age : null, phone : null};
   const reducer = (state = initialState, action) => {
     switch (action.type) {
       case "name":
@@ -12,6 +12,8 @@
         return Object.assign({}, state, {age : action.payload });
       case "phone":
         return Object.assign({}, state, {phone : action.payload});
+      case "show":
+        return Object.assign({}, state, {show : action.payload});
       default:
         return state;
     }

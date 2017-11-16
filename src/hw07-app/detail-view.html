@@ -22,9 +22,13 @@
       width: 100%;
       height: 50%;
     }
+    paper-button {
+      width: 100%;
+    }
     paper-card {
       width: 100%;
       background-color: lightblue;
+      margin-top: 5px;
     }
     paper-card:hover {
       @apply(--shadow-elevation-16dp);
@@ -32,6 +36,12 @@
     .card-content {
       margin-top: -10px;
       margin-left: 10px;
+    }
+    .false {
+      display: none;
+    }
+    .true {
+      display: inherit;
     }
     #card-holder {
       padding: 5px;
@@ -49,28 +59,28 @@
       background-color: lightgreen;
     }
   </style>
-  <h2>Details for [[name]] [[age]] and [[phone]]</h2>
-  <paper-button raised on-click="addOne">Increment</paper-button>
-  <iron-list items="[[qryData]]" as="ord">
-    <template>
-     <div id="card-holder">
-      <paper-card>
-        <div id="cardinfo" class="layout horizontal">
-          <div class="layout vertical">
-            <div class="card-content"><h3>[[ord.name]]</h3></div>
-          </div>
+  <paper-button raised on-click="unselect">Unselect</paper-button>
+  <div id="card-holder" class$="{{_computedClass(show)}}">
+    <paper-card>
+      <div id="cardinfo" class="layout horizontal">
+        <div class="layout vertical">
+          <div class="card-content"><h2>[[name]]</h2></div>
+          <div class="card-content"><h3>Age: [[age]]</h3></div>
+          <div class="card-content"><h3>Phone Number: [[phone]]</h3></div>
         </div>
-      </paper-card>
-     </div>
-    </template>
-  </iron-list>
-
+      </div>
+    </paper-card>
+  </div>
 </template>
 <script>
     class DetailView extends ReduxMixin(Polymer.Element) {
       static get is() { return 'detail-view'; }
       static get properties() {
         return {
+          show: {
+            type: String,
+            statePath: 'show'
+          },
           name: {
             type: String,
             statePath: 'name'
@@ -85,15 +95,13 @@
           },
         };
       }
-
-      addOne() {
-        this.dispatch({type: 'INC'});
+      _computedClass(classname) {
+        return classname;
       }
-      subOne() {
-        this.dispatch({type: 'DEC'});
+      unselect() {
+        this.dispatch({type: "show", payload: "false"});
       }
     }
-
     window.customElements.define(DetailView.is, DetailView);
   </script>
 </dom-module>
