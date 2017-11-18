@@ -13,7 +13,7 @@
 <link rel="import" href="../../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-right-animation.html">
-<link rel="import" href="../../src/hw07-app/redux-mixin.html">
+<link rel="import" href="../../src/hw07-app/Action-Update.html">
 
 <dom-module id="hw07-app">
   <template is="dom-bind">
@@ -51,7 +51,12 @@
       background-color: lightgreen;
     }
     .selected {
-      background-color: lightyellow;
+      animation-name: example;
+      animation-duration: 2s;
+    }
+    @-webkit-keyframes example {
+      0%   {background-color: lightyellow;}
+      100% {background-color: lightgreen;}
     }
   </style>
 
@@ -90,28 +95,18 @@
 
 </template>
 <script>
-    class Hw07App extends ReduxMixin(Polymer.Element) {
+    class Hw07App extends ActionMixin(Polymer.Element) {
       static get is() { return 'hw07-app'; }
       static get properties() {
-        return {
-          type: {
-            type: String,
-            value: 'hw07-app'
-          }
-        };
+        return {};
       }
 
       _computedClass(isSelected, item) {
         var classes = 'item';
         if (isSelected) {
           classes += ' selected';
-          this.dispatch({type: "name", payload: item.name});
-          this.dispatch({type: "age", payload: item.age});
-          this.dispatch({type: "phone", payload: item.phone});
-          this.dispatch({type: "show", payload: "true"});
-        }
-        else {
-          this.dispatch({type: "show", payload: "false"});
+          this.dispatch('updateDetail', item.name, item.age, item.phone);
+          this.dispatch('updateView', "true");
         }
         return classes;
       }

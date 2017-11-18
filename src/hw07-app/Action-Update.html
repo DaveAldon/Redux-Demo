@@ -1,0 +1,16 @@
+<!-- in action-mixin.html -->
+<link rel="import" href="../../src/hw07-app/redux-mixin.html">
+<script>
+  ActionMixin = Parent => class ActionMixin extends ReduxMixin(Parent) {
+    static get actions() {  /* ACTION CREATOR */
+      return {
+        updateDetail(n, a, p) {
+          return {type: "detail", payload: {name: n, age: a, phone: p}};
+          },
+        updateView(b) {
+          return {type: "show", payload: b}
+        }
+      }
+    }
+  }
+</script>

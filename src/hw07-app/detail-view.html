@@ -13,7 +13,7 @@
 <link rel="import" href="../../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-right-animation.html">
-<link rel="import" href="../../src/hw07-app/redux-mixin.html">
+<link rel="import" href="../../src/hw07-app/Action-Update.html">
 
 <dom-module id="detail-view">
   <template is="dom-bind">
@@ -64,16 +64,16 @@
     <paper-card>
       <div id="cardinfo" class="layout horizontal">
         <div class="layout vertical">
-          <div class="card-content"><h2>[[name]]</h2></div>
-          <div class="card-content"><h3>Age: [[age]]</h3></div>
-          <div class="card-content"><h3>Phone Number: [[phone]]</h3></div>
+          <div class="card-content"><h2>[[detail.name]]</h2></div>
+          <div class="card-content"><h3>Age: [[detail.age]]</h3></div>
+          <div class="card-content"><h3>Phone Number: [[detail.phone]]</h3></div>
         </div>
       </div>
     </paper-card>
   </div>
 </template>
 <script>
-    class DetailView extends ReduxMixin(Polymer.Element) {
+    class DetailView extends ActionMixin(Polymer.Element) {
       static get is() { return 'detail-view'; }
       static get properties() {
         return {
@@ -81,17 +81,9 @@
             type: String,
             statePath: 'show'
           },
-          name: {
-            type: String,
-            statePath: 'name'
-          },
-          age: {
-            type: Number,
-            statePath: 'age'
-          },
-          phone: {
-            type: Number,
-            statePath: 'phone'
+          detail: {
+            type: Object,
+            statePath: 'detail'
           },
         };
       }
@@ -99,7 +91,7 @@
         return classname;
       }
       unselect() {
-        this.dispatch({type: "show", payload: "false"});
+        this.dispatch('updateView', "false");
       }
     }
     window.customElements.define(DetailView.is, DetailView);
