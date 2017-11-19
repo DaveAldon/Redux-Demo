@@ -3,13 +3,13 @@
 <script src="../../node_modules/redux/dist/redux.js"></script>
 
 <script>
-  const initialState = { show : "false", detail : {name : null, age : null, phone : null}};
+  // The initial value of our object
+  const initialState = {detail : {name : null, age : null, phone : null}};
   const reducer = (state = initialState, action) => {
     switch (action.type) {
+      // Defines how the values are passed into the object
       case "detail":
         return Object.assign(state, {detail : {name : action.payload.name,  age : action.payload.age, phone : action.payload.phone}});
-      case "show":
-        return Object.assign({}, state, {show : action.payload});
       default:
         return state;
     }

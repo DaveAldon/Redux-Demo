@@ -17,96 +17,102 @@
 
 <dom-module id="hw07-app">
   <template is="dom-bind">
-  <style include="iron-flex iron-flex-alignment">
-    iron-list {
-      width: 100%;
-      height: 50%;
-    }
-    paper-card {
-      width: 100%;
-    }
-    paper-card:hover {
-      @apply(--shadow-elevation-16dp);
-    }
-    .card-content {
-      margin-top: -10px;
-      margin-left: 10px;
-    }
-    #card-holder {
-      padding: 5px;
-    }
-    #addfriendbtn {
-      width: 59.3%;
-    }
-    #delitembtn {
-      background-color: salmon;
-      height: 63%;
-      right: -5px;
-      position: absolute;
-    }
-    #selectName {
-      text-align: center;
-    }
-    .item {
-      background-color: lightgreen;
-    }
-    .selected {
-      animation-name: example;
-      animation-duration: 2s;
-    }
-    @-webkit-keyframes example {
-      0%   {background-color: lightyellow;}
-      100% {background-color: lightgreen;}
-    }
-  </style>
-
-  <firebase-app id="myFireApp" auth-domain="json-homework-4.firebaseapp.com"
-    database-url="https://json-homework-4.firebaseio.com"
-    api-key="AIzaSyBpUYA2lX51fEKjHqkKIajJVVAY5cUIcOg"
-    messaging-sender-id="365368634575">
-  </firebase-app>
-  <firebase-query path="/users" data="{{qryData}}"></firebase-query>
-
-  <paper-dialog id="newFriend" entry-animation="slide-from-left-animation" exit-animation="slide-right-animation" modal on-iron-overlay-closed="diaClosed">
-    <div class="buttons">
-      <div class="layout vertical">
-        <paper-input id="inName" label="Name"></paper-input>
-        <paper-input auto-validate allowed-pattern="[0-9]" id="inPhone" label="Phone Number"></paper-input>
-        <paper-input auto-validate allowed-pattern="[0-9]" id="inAge" label="Age"></paper-input>
+    <style include="iron-flex iron-flex-alignment">
+      iron-list {
+        width: 100%;
+        height: 50%;
+      }
+      paper-card {
+        width: 100%;
+      }
+      paper-card:hover {
+        @apply(--shadow-elevation-16dp);
+      }
+      .card-content {
+        margin-top: -10px;
+        margin-left: 10px;
+      }
+      #card-holder {
+        padding: 5px;
+      }
+      #addfriendbtn {
+        width: 59.3%;
+      }
+      #delitembtn {
+        background-color: salmon;
+        height: 63%;
+        right: -5px;
+        position: absolute;
+      }
+      #selectName {
+        text-align: center;
+      }
+      .item {
+        background-color: lightgreen;
+      }
+      .selected {
+        animation-name: example;
+        animation-duration: 2s;
+      }
+      @-webkit-keyframes example {
+        0%   {background-color: lightyellow;}
+        100% {background-color: lightgreen;}
+      }
+    </style>
+    <firebase-app id="myFireApp" auth-domain="json-homework-4.firebaseapp.com"
+      database-url="https://json-homework-4.firebaseio.com"
+      api-key="AIzaSyBpUYA2lX51fEKjHqkKIajJVVAY5cUIcOg"
+      messaging-sender-id="365368634575">
+    </firebase-app>
+    <firebase-query path="/users" data="{{qryData}}"></firebase-query>
+    <paper-dialog id="newFriend" entry-animation="slide-from-left-animation" exit-animation="slide-right-animation" modal on-iron-overlay-closed="diaClosed">
+      <div class="buttons">
+        <div class="layout vertical">
+          <paper-input id="inName" label="Name"></paper-input>
+          <paper-input auto-validate allowed-pattern="[0-9]" id="inPhone" label="Phone Number"></paper-input>
+          <paper-input auto-validate allowed-pattern="[0-9]" id="inAge" label="Age"></paper-input>
+        </div>
+        <paper-button dialog-confirm>Add</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
       </div>
-      <paper-button dialog-confirm>Add</paper-button>
-      <paper-button dialog-dismiss>Cancel</paper-button>
-    </div>
-  </paper-dialog>
-
-  <iron-list items="[[qryData]]" selected-items="{{selectedItems}}" selection-enabled as="ord">
-    <template>
-     <div id="card-holder">
-       <paper-card>
-         <div id="cardinfo" class="layout horizontal" class$="[[_computedClass(selected, ord, show)]]">
-           <div id="selectName" class="layout vertical">
-             <h3>[[ord.name]]</h3>
+    </paper-dialog>
+    <iron-list items="[[qryData]]" selected-item="{{selectedItem}}" selection-enabled as="ord">
+      <template>
+       <div id="card-holder">
+         <paper-card>
+           <div id="cardinfo" class="layout horizontal" class$="[[_computedClass(selected)]]">
+             <div id="selectName" class="layout vertical">
+               <h3>[[ord.name]]</h3>
+             </div>
            </div>
-         </div>
-       </paper-card>
-     </div>
-    </template>
-  </iron-list>
-
-</template>
-<script>
+         </paper-card>
+       </div>
+      </template>
+    </iron-list>
+  </template>
+  <script>
     class Hw07App extends ActionMixin(Polymer.Element) {
       static get is() { return 'hw07-app'; }
       static get properties() {
-        return {};
+        return {
+          selectedItem: {
+            type: String,
+            value: null,
+            observer: "_userUpdated"
+          }
+        };
       }
-
-      _computedClass(isSelected, item) {
+      // Called when the oberserved property, the iron-index index, changes
+      _userUpdated(item) {
+        if(item != null) {
+          this.dispatch('updateDetail', item.name, item.age, item.phone);
+        }
+      }
+      // Controls the little click effect for specific selected items
+      _computedClass(isSelected) {
         var classes = 'item';
         if (isSelected) {
           classes += ' selected';
-          this.dispatch('updateDetail', item.name, item.age, item.phone);
-          this.dispatch('updateView', "true");
         }
         return classes;
       }

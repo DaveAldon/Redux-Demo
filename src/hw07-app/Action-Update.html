@@ -4,11 +4,9 @@
   ActionMixin = Parent => class ActionMixin extends ReduxMixin(Parent) {
     static get actions() {  /* ACTION CREATOR */
       return {
+        // Passes an action to redux as an object, allows us to call the action as a function
         updateDetail(n, a, p) {
           return {type: "detail", payload: {name: n, age: a, phone: p}};
-          },
-        updateView(b) {
-          return {type: "show", payload: b}
         }
       }
     }

@@ -37,10 +37,10 @@
       margin-top: -10px;
       margin-left: 10px;
     }
-    .false {
+    .invisible {
       display: none;
     }
-    .true {
+    .visible {
       display: inherit;
     }
     #card-holder {
@@ -60,7 +60,7 @@
     }
   </style>
   <paper-button raised on-click="unselect">Unselect</paper-button>
-  <div id="card-holder" class$="{{_computedClass(show)}}">
+  <div id="card-holder" class$="{{_computedClass(detail)}}">
     <paper-card>
       <div id="cardinfo" class="layout horizontal">
         <div class="layout vertical">
@@ -77,21 +77,24 @@
       static get is() { return 'detail-view'; }
       static get properties() {
         return {
-          show: {
-            type: String,
-            statePath: 'show'
-          },
+          // Property observer for the redux object
           detail: {
             type: Object,
             statePath: 'detail'
           },
         };
       }
-      _computedClass(classname) {
-        return classname;
+      // Controls the visibility of the details element based on the contents of the redux object
+      _computedClass(detail) {
+        // We say detail.name because if it's null, the rest will be too
+        if(detail.name == null) {
+          return "invisible"
+        }
+        return "visible";
       }
+      // Resets the redux object by passing a function to the Action Mixin
       unselect() {
-        this.dispatch('updateView', "false");
+        this.dispatch('updateDetail', null, null, null);
       }
     }
     window.customElements.define(DetailView.is, DetailView);
