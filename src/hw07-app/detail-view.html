@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
@@ -71,6 +72,18 @@
       </div>
     </paper-card>
   </div>
+  <iron-collapse id="collapse">
+    <paper-card>
+      <div id="cardinfo" class="layout horizontal">
+        <div class="layout vertical">
+          <h2>Iron-Collapse Section</h2>
+          <div class="card-content"><h2>[[detail.name]]</h2></div>
+          <div class="card-content"><h3>Age: [[detail.age]]</h3></div>
+          <div class="card-content"><h3>Phone Number: [[detail.phone]]</h3></div>
+        </div>
+      </div>
+    </paper-card>
+  </iron-collapse>
 </template>
 <script>
     class DetailView extends ActionMixin(Polymer.Element) {
@@ -88,8 +101,10 @@
       _computedClass(detail) {
         // We say detail.name because if it's null, the rest will be too
         if(detail.name == null) {
+          this.$.collapse.hide();
           return "invisible"
         }
+        this.$.collapse.show();
         return "visible";
       }
       // Resets the redux object by passing a function to the Action Mixin
